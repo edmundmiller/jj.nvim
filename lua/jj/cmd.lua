@@ -429,7 +429,7 @@ local function run(cmd)
 			DFT_BACKGROUND = "light",
 		},
 		on_stdout = function(_, data)
-			if not vim.api.nvim_buf_is_valid(state.buf) or not state.chan then
+			if not (state.buf and vim.api.nvim_buf_is_valid(state.buf)) or not state.chan then
 				return
 			end
 			local output = table.concat(data, "\n")
@@ -437,7 +437,7 @@ local function run(cmd)
 		end,
 		on_exit = function(_, _)
 			vim.schedule(function()
-				if vim.api.nvim_buf_is_valid(state.buf) then
+				if state.buf and vim.api.nvim_buf_is_valid(state.buf) then
 					vim.bo[state.buf].modifiable = false
 					if vim.api.nvim_get_current_buf() == state.buf then
 						vim.cmd("stopinsert")
